@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request Account Deletion - Edupath</title>
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyD-vf4Es2d95BpNc9hc3zPLuG1YY7nBpKU",
+  authDomain: "map-availability.firebaseapp.com",
+  projectId: "map-availability",
+  storageBucket: "map-availability.appspot.com",
+  messagingSenderId: "120188928102",
+  appId: "1:120188928102:web:619f8af38d9bfda3a66da7"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('deleteForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const reason = document.getElementById('reason').value.trim();
+    const checkEmailStudent = email.slice(-21);
+    const checkEmailTeacher = email.slice(-13);
+    if (checkEmailStudent !== "@student.allenisd.org" && checkEmailTeacher !== "@allenisd.org") {
+      alert("You must use an Allen ISD email");
+      return false;
+    }
+    if (!email) {
+      alert("Please enter your email.");
+      return;
+    }
+    try {
+      await addDoc(collection(db, "deletionRequests"), {
+        email,
+        reason,
+        requestedAt: Timestamp.now()
+      });
+      alert("Your account deletion request has been submitted.");
+      form.reset();
+    } catch (error) {
+      console.error("Error submitting request:", error);
+      alert("There was an error submitting your request. Please try again.");
+    }
+  });
+});
+</script>
+<style>
+  /* Reset and base styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Header styles */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background-color: #3a86ff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .logo:hover {
+    transform: scale(1.05);
+  }
+  
+  .navbar {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0.8rem;
+    border-radius: 4px;
+  }
+  
+  .navbar a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Main content styles */
+  main {
+    flex: 1;
+    padding: 2rem 5%;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  h1 {
+    color: #2b2d42;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+  }
+  
+  p {
+    margin-bottom: 2rem;
+    color: #555;
+  }
+  
+  /* Form styles */
+  form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #3a86ff;
+    box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+  }
+  
+  label {
+    font-weight: 500;
+    color: #2b2d42;
+  }
+  
+  .btn {
+    background-color: #3a86ff;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .submit-btn {
+    display: inline-block;
+  }
+  
+  .btn:hover {
+    background-color: #2878ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(58, 134, 255, 0.3);
+  }
+  
+  .btn:active {
+    transform: translateY(0);
+  }
+  
+  /* Footer styles */
+  .footer {
+    background-color: #2b2d42;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: auto;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      padding: 1rem;
+    }
+    
+    .logo {
+      margin-bottom: 1rem;
+    }
+    
+    .navbar {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem 0.5rem;
+    }
+    
+    main {
+      padding: 1.5rem;
+    }
+    
+    form {
+      padding: 1.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="../index.html" class="logo">Edupath</a>
+  <nav class="navbar">
+    <a href="../index.html">Home</a>
+    <a href="prototype.html">Our Prototype</a>
+    <a href="aboutUs.html">About Us</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="privacypolicy.html">Privacy Policy</a>
+    <a href="support.html">Support</a>
+  </nav>
+</header>
+<main>
+  <h1>Request Account Deletion</h1>
+  <p>If you'd like us to delete your Edupath account, please fill out the form below.</p>
+  <form id="deleteForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required placeholder="you@example.com">
+    
+    <label for="reason">Reason (optional):</label>
+    <textarea id="reason" name="reason" rows="5" placeholder="Why are you deleting your account?"></textarea>
+    
+    <button type="submit" class="btn submit-btn">Submit Deletion Request</button>
+  </form>
+</main>
+<footer class="footer">
+  <p>&copy; 2025 Edupath. All rights reserved.</p>
+</footer>
+</body>
+</html>
